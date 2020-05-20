@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Form from './components/Form'
 
+import formSchema from './validation/formSchema'
+import axios from 'axios'
+import * as yup from 'yup'
+
 const initialFormValues = {
   username:'',
   email: '',
@@ -28,10 +32,28 @@ function App() {
   const [disabled, setDisabled] = useState(initialDisabled)
 
   const onInputChange = evt => {
-    const {name} = evt.target
-    const {value} = evt.target
+    const name = evt.target.name
+    const value = evt.target.value
 
-    setFormValues({ ...formValues, [name]: value})
+    yup
+      .reach(formSchema, name)
+      .validate(value)
+      .then(valid => {
+        setFormErrors({
+          ...formErrors,
+          [name]: ''
+        })
+      })
+      .catch(err => {
+        setFormErrors({
+          ...formErrors,
+          [name]: err.errors[0]
+        })
+      })
+    setFormValues({ 
+      ...formValues, 
+      [name]: value
+    })
   }
 
   const onCheckboxChange = evt => {
@@ -55,7 +77,15 @@ function App() {
     const newUser = { ...formValues}
     setUsers([newUser, ...users])
     setFormValues(initialFormValues)
+    
   }
+
+  useEffect(() => {
+    formSchema.isValid(formValues)
+      .then(valid => {
+        setDisabled(!valid)
+      })
+  }, [formValues])
 
   return (
     <div className="App">
