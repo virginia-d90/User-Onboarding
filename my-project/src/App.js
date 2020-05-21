@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Form from './components/Form'
+import User from './components/User'
 
 import formSchema from './validation/formSchema'
 import axios from 'axios'
@@ -8,6 +9,8 @@ import * as yup from 'yup'
 
 const initialFormValues = {
   username:'',
+  first_name: '',
+  last_name: '',
   email: '',
   password: '',
   
@@ -17,19 +20,46 @@ const initialFormValues = {
 
 const initialFormErrors = {
   username: '',
+  first_name:'',
+  last_name: '',
   email: '',
   password: '',
   termsOfService: '',
 }
 
-//const initialUsers = []
+const initialUsers = []
 const initialDisabled = true
 
 function App() {
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState(initialUsers)
   const [formValues, setFormValues] = useState(initialFormValues)
   const [formErrors, setFormErrors] = useState(initialFormErrors)
   const [disabled, setDisabled] = useState(initialDisabled)
+
+  const getUsers = () => {
+    axios.get('https://reqres.in/api/users')
+      .then(res => {
+        setUsers(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      
+  }
+
+  const postNewUser = newUser => {
+    axios.post('https://reqres.in/api/users', newUser)
+      .then(res => {
+        console.log(users, res.data)
+        setUsers([...users, res.data])
+      })
+      .catch(err =>{
+        console.log('post is broken')
+      })
+      .finally(() => {
+        setFormValues(initialFormValues)
+      })
+  }
 
   const onInputChange = evt => {
     const name = evt.target.name
@@ -66,18 +96,16 @@ function App() {
 
   const onSubmit = evt => {
     evt.preventDefault()
-
-    if (
-      !formValues.username.trim() ||
-      !formValues.email.trim() ||
-      !formValues.password.trim() 
-    ){
-      return
-    }
-    const newUser = { ...formValues}
-    setUsers([newUser, ...users])
-    setFormValues(initialFormValues)
     
+    const newUser = {
+      first_name: formValues.first_name.trim(),
+      last_name: formValues.first_name.trim(),
+      email: formValues.email.trim(),
+      password: formValues.password.trim(),
+      
+    }
+    
+    postNewUser(newUser)
   }
 
   useEffect(() => {
@@ -86,6 +114,10 @@ function App() {
         setDisabled(!valid)
       })
   }, [formValues])
+
+  useEffect(() => {
+    getUsers()
+  }, [])
 
   return (
     <div className="App">
@@ -97,6 +129,13 @@ function App() {
       errors={formErrors}
       onCheckboxChange={onCheckboxChange}
        />
+      {
+        users.map(user => {
+          return(
+            <User key={user.id} details={user}/>
+          )
+        })
+      }
     </div>
   );
 }

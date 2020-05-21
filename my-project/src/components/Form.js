@@ -18,7 +18,8 @@ const Form = (props) => {
             </div>
 
             <div className='errors'>
-                <div>{errors.username}</div>
+                <div>{errors.first_name}</div>
+                <div>{errors.last_name}</div>
                 <div>{errors.email}</div>
                 <div>{errors.password}</div>
                 <div>{errors.termsOfService}</div>
@@ -26,13 +27,23 @@ const Form = (props) => {
 
             <div className='form inputs'>
                 <h3>User Info</h3>
-                <label>Name:&nbsp;
+                <label>First Name:&nbsp;
                     <input
                         type='text'
                         placeholder='type name here'
                         maxLength='30'
-                        name='username'
-                        value={values.username}
+                        name='first_name'
+                        value={values.first_name}
+                        onChange={onInputChange}
+                    />
+                </label>
+                <label>Last Name:&nbsp;
+                    <input
+                        type='text'
+                        placeholder='type name here'
+                        maxLength='30'
+                        name='last_name'
+                        value={values.last_name}
                         onChange={onInputChange}
                     />
                 </label>
