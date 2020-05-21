@@ -8,7 +8,6 @@ import axios from 'axios'
 import * as yup from 'yup'
 
 const initialFormValues = {
-  username:'',
   first_name: '',
   last_name: '',
   email: '',
@@ -19,7 +18,6 @@ const initialFormValues = {
 }
 
 const initialFormErrors = {
-  username: '',
   first_name:'',
   last_name: '',
   email: '',
@@ -39,7 +37,7 @@ function App() {
   const getUsers = () => {
     axios.get('https://reqres.in/api/users')
       .then(res => {
-        setUsers(res.data)
+        setUsers(res.data.data)
       })
       .catch(err => {
         console.log(err)
@@ -50,8 +48,8 @@ function App() {
   const postNewUser = newUser => {
     axios.post('https://reqres.in/api/users', newUser)
       .then(res => {
-        console.log(users, res.data)
-        setUsers([...users, res.data])
+        console.log(users, res.data.data)
+        setUsers([...users, res.data.data])
       })
       .catch(err =>{
         console.log('post is broken')
@@ -59,6 +57,7 @@ function App() {
       .finally(() => {
         setFormValues(initialFormValues)
       })
+      
   }
 
   const onInputChange = evt => {
@@ -99,13 +98,15 @@ function App() {
     
     const newUser = {
       first_name: formValues.first_name.trim(),
-      last_name: formValues.first_name.trim(),
+      last_name: formValues.last_name.trim(),
       email: formValues.email.trim(),
       password: formValues.password.trim(),
+      
       
     }
     
     postNewUser(newUser)
+    console.log(newUser)
   }
 
   useEffect(() => {
@@ -129,13 +130,13 @@ function App() {
       errors={formErrors}
       onCheckboxChange={onCheckboxChange}
        />
-      {
+      {/* {
         users.map(user => {
           return(
             <User key={user.id} details={user}/>
           )
         })
-      }
+      } */}
     </div>
   );
 }
