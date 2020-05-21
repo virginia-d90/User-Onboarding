@@ -37,6 +37,7 @@ function App() {
   const getUsers = () => {
     axios.get('https://reqres.in/api/users')
       .then(res => {
+        console.log(res)
         setUsers(res.data.data)
       })
       .catch(err => {
@@ -48,8 +49,8 @@ function App() {
   const postNewUser = newUser => {
     axios.post('https://reqres.in/api/users', newUser)
       .then(res => {
-        console.log(users, res.data.data)
-        setUsers([...users, res.data.data])
+        console.log(users, res.data)
+        setUsers([...users, res.data])
       })
       .catch(err =>{
         console.log('post is broken')
@@ -130,13 +131,13 @@ function App() {
       errors={formErrors}
       onCheckboxChange={onCheckboxChange}
        />
-      {/* {
+      {
         users.map(user => {
           return(
             <User key={user.id} details={user}/>
           )
         })
-      } */}
+      }
     </div>
   );
 }

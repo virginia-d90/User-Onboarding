@@ -14,7 +14,7 @@ const Form = (props) => {
         <form className='form container' onSubmit={onSubmit}>
             <div className='form submit' >
                 <h2>Onboard Member Here</h2>
-                <button disabled={disabled}>Submit</button>
+                <button disabled={disabled} className='submit'>Submit</button>
             </div>
 
             <div className='errors'>
